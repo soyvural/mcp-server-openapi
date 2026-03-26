@@ -1,0 +1,8 @@
+bin/
+dist/
+*.log
+*.exe
+.DS_Store
+# built binaries
+demo-api
+mcp-server-openapi

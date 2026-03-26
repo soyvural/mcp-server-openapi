@@ -1,0 +1,40 @@
+openapi: "3.0.3"
+info:
+  title: Extensions Test
+  version: "1.0.0"
+servers:
+  - url: https://api.example.com
+paths:
+  /visible:
+    get:
+      tags: [mcp]
+      operationId: visibleOp
+      summary: A visible operation
+      x-mcp-tool-name: custom_visible
+      x-mcp-description: Custom description here
+      responses:
+        "200":
+          description: OK
+  /hidden:
+    get:
+      tags: [mcp]
+      operationId: hiddenOp
+      summary: A hidden operation
+      x-mcp-hidden: true
+      responses:
+        "200":
+          description: OK
+  /forced:
+    get:
+      tags: [internal]
+      operationId: forcedOp
+      summary: Forced visible via extension
+      x-mcp-hidden: false
+      parameters:
+        - name: q
+          in: query
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK

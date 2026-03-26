@@ -1,0 +1,190 @@
+openapi: 3.0.3
+info:
+  title: Task Manager API
+  description: A simple task management API for MCP server demonstration
+  version: 1.0.0
+servers:
+  - url: http://localhost:9090
+    description: Local development server
+paths:
+  /tasks:
+    get:
+      summary: List all tasks
+      description: Returns a list of all tasks in the system
+      operationId: listTasks
+      tags:
+        - tasks
+        - mcp
+      x-mcp-tool-name: list_tasks
+      x-mcp-description: Retrieve all tasks from the task manager
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Task'
+    post:
+      summary: Create a new task
+      description: Creates a new task with the provided information
+      operationId: createTask
+      tags:
+        - tasks
+        - mcp
+      x-mcp-tool-name: create_task
+      x-mcp-description: Add a new task to the task manager
+      requestBody:
+        description: Task to create
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TaskInput'
+      responses:
+        '201':
+          description: Task created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Task'
+        '400':
+          description: Invalid input
+  /tasks/{id}:
+    get:
+      summary: Get a task by ID
+      description: Returns a single task by its ID
+      operationId: getTask
+      tags:
+        - tasks
+        - mcp
+      x-mcp-tool-name: get_task
+      x-mcp-description: Retrieve a specific task by its ID
+      parameters:
+        - name: id
+          in: path
+          description: Task ID
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Task'
+        '400':
+          description: Invalid ID supplied
+        '404':
+          description: Task not found
+    put:
+      summary: Update a task
+      description: Updates an existing task with new information
+      operationId: updateTask
+      tags:
+        - tasks
+        - mcp
+      x-mcp-tool-name: update_task
+      x-mcp-description: Update an existing task with new information
+      parameters:
+        - name: id
+          in: path
+          description: Task ID to update
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        description: Updated task information
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TaskInput'
+      responses:
+        '200':
+          description: Task updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Task'
+        '400':
+          description: Invalid input
+        '404':
+          description: Task not found
+    delete:
+      summary: Delete a task
+      description: Deletes a task by its ID
+      operationId: deleteTask
+      tags:
+        - tasks
+        - mcp
+      x-mcp-tool-name: delete_task
+      x-mcp-description: Remove a task from the task manager
+      parameters:
+        - name: id
+          in: path
+          description: Task ID to delete
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '204':
+          description: Task deleted successfully
+        '400':
+          description: Invalid ID supplied
+        '404':
+          description: Task not found
+components:
+  schemas:
+    Task:
+      type: object
+      required:
+        - id
+        - title
+        - completed
+        - created_at
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 1
+          description: Unique task identifier
+        title:
+          type: string
+          example: "Setup development environment"
+          description: Task title
+        description:
+          type: string
+          example: "Install Go, configure editor, clone repository"
+          description: Detailed task description
+        completed:
+          type: boolean
+          example: false
+          description: Task completion status
+        created_at:
+          type: string
+          format: date-time
+          example: "2026-03-26T10:00:00Z"
+          description: Timestamp when task was created
+    TaskInput:
+      type: object
+      required:
+        - title
+      properties:
+        title:
+          type: string
+          example: "Setup development environment"
+          description: Task title
+        description:
+          type: string
+          example: "Install Go, configure editor, clone repository"
+          description: Detailed task description
+        completed:
+          type: boolean
+          example: false
+          description: Task completion status
