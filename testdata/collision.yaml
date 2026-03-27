@@ -1,0 +1,33 @@
+openapi: "3.0.3"
+info:
+  title: Collision Test
+  version: "1.0.0"
+servers:
+  - url: https://api.example.com
+paths:
+  /items/{name}:
+    put:
+      tags: [mcp]
+      operationId: updateItem
+      summary: Update an item
+      parameters:
+        - name: name
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [name]
+              properties:
+                name:
+                  type: string
+                value:
+                  type: integer
+      responses:
+        "200":
+          description: Updated

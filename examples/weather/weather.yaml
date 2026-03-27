@@ -1,0 +1,147 @@
+openapi: 3.0.3
+info:
+  title: Weather API
+  description: Open-Meteo Weather API — free, no API key required
+  version: 1.0.0
+servers:
+  - url: https://api.open-meteo.com
+paths:
+  /v1/forecast:
+    get:
+      summary: Get weather forecast
+      description: Returns current weather and forecast for a location using latitude and longitude
+      operationId: getForecast
+      tags:
+        - weather
+        - mcp
+      parameters:
+        - name: latitude
+          in: query
+          description: Latitude of the location (e.g. 52.52 for Berlin)
+          required: true
+          schema:
+            type: number
+            format: float
+        - name: longitude
+          in: query
+          description: Longitude of the location (e.g. 13.41 for Berlin)
+          required: true
+          schema:
+            type: number
+            format: float
+        - name: current
+          in: query
+          description: Current weather variables (comma-separated). Options include temperature_2m, relative_humidity_2m, apparent_temperature, precipitation, rain, wind_speed_10m, wind_direction_10m, weather_code
+          required: false
+          schema:
+            type: string
+            default: temperature_2m,wind_speed_10m,weather_code
+        - name: daily
+          in: query
+          description: Daily weather variables (comma-separated). Options include temperature_2m_max, temperature_2m_min, precipitation_sum, wind_speed_10m_max, weather_code
+          required: false
+          schema:
+            type: string
+        - name: hourly
+          in: query
+          description: Hourly weather variables (comma-separated). Options include temperature_2m, relative_humidity_2m, precipitation_probability, wind_speed_10m
+          required: false
+          schema:
+            type: string
+        - name: timezone
+          in: query
+          description: Timezone for the forecast (e.g. auto, America/New_York, Europe/Berlin)
+          required: false
+          schema:
+            type: string
+            default: auto
+        - name: forecast_days
+          in: query
+          description: Number of forecast days (1-16)
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 16
+            default: 7
+        - name: temperature_unit
+          in: query
+          description: Temperature unit
+          required: false
+          schema:
+            type: string
+            enum:
+              - celsius
+              - fahrenheit
+            default: celsius
+        - name: wind_speed_unit
+          in: query
+          description: Wind speed unit
+          required: false
+          schema:
+            type: string
+            enum:
+              - kmh
+              - ms
+              - mph
+              - kn
+            default: kmh
+      responses:
+        '200':
+          description: Weather forecast data
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  latitude:
+                    type: number
+                  longitude:
+                    type: number
+                  timezone:
+                    type: string
+                  current:
+                    type: object
+                  daily:
+                    type: object
+                  hourly:
+                    type: object
+        '400':
+          description: Invalid parameters
+  /v1/elevation:
+    get:
+      summary: Get elevation
+      description: Returns the elevation in meters for given coordinates
+      operationId: getElevation
+      tags:
+        - weather
+        - mcp
+      parameters:
+        - name: latitude
+          in: query
+          description: Latitude of the location (e.g. 52.52 for Berlin)
+          required: true
+          schema:
+            type: number
+            format: float
+        - name: longitude
+          in: query
+          description: Longitude of the location (e.g. 13.41 for Berlin)
+          required: true
+          schema:
+            type: number
+            format: float
+      responses:
+        '200':
+          description: Elevation data
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  elevation:
+                    type: array
+                    items:
+                      type: number
+        '400':
+          description: Invalid parameters

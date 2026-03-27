@@ -1,0 +1,92 @@
+openapi: "3.0.3"
+info:
+  title: Store
+  version: "1.0.0"
+servers:
+  - url: https://store.example.com/v1
+paths:
+  /items:
+    get:
+      tags: [mcp]
+      operationId: listItems
+      summary: List all items
+      parameters:
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: int32
+      responses:
+        "200":
+          description: A list of items
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Item'
+    post:
+      tags: [mcp]
+      operationId: createItem
+      summary: Create an item
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateItemRequest'
+      responses:
+        "201":
+          description: Item created
+  /items/{id}:
+    get:
+      tags: [mcp]
+      operationId: getItemById
+      summary: Get an item by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: An item
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Item'
+    delete:
+      tags: [internal]
+      operationId: deleteItem
+      summary: Delete an item
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "204":
+          description: Item deleted
+components:
+  schemas:
+    Item:
+      type: object
+      required: [id, name]
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        tag:
+          type: string
+    CreateItemRequest:
+      type: object
+      required: [name]
+      properties:
+        name:
+          type: string
+        tag:
+          type: string
